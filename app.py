@@ -4,7 +4,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////mnt/c/Users/antho/Documents/blog/blog.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////mnt/d/mein teil/studies/projects/blog.db'
 
 db = SQLAlchemy(app)
 
@@ -18,9 +18,7 @@ class Blogpost(db.Model):
 
 @app.route('/')
 def index():
-    posts = Blogpost.query.order_by(Blogpost.date_posted.desc()).all()
-
-    return render_template('index.html', posts=posts)
+    return render_template('index.html')
 
 @app.route('/about')
 def about():
@@ -28,7 +26,9 @@ def about():
 
 @app.route('/post/<int:post_id>')
 def post(post_id):
+
     post = Blogpost.query.filter_by(id=post_id).one()
+    
 
     return render_template('post.html', post=post)
 
@@ -36,19 +36,22 @@ def post(post_id):
 def add():
     return render_template('add.html')
 
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
+
 @app.route('/addpost', methods=['POST'])
 def addpost():
-    title = request.form['title']
-    subtitle = request.form['subtitle']
-    author = request.form['author']
-    content = request.form['content']
+    title =request.form['title']
+    subtitle =request.form['subtitle']
+    author =request.form['author']
+    content =request.form['content']
 
-    post = Blogpost(title=title, subtitle=subtitle, author=author, content=content, date_posted=datetime.now())
-
-    db.session.add(post)
-    db.session.commit()
+    post = Blogpost(title=title,subtitle=subtitle,author=author,content=content,date_posted=datetime.now())
 
     return redirect(url_for('index'))
+    
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug = True)
+
