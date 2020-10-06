@@ -1,0 +1,7 @@
+{
+    "params": {
+        "name_of_blog":"Flask Blog",
+        "local_url": "sqlite:////mnt/c/Users/antho/Documents/blog/blog.db",
+        "prod_url": "sqlite:////mnt/c/Users/antho/Documents/blog/blog.db"
+    }
+}

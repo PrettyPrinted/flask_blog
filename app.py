@@ -1,11 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy 
 from datetime import datetime
+import json
+with open("config.json", "r") as c:
+    params = json.load(c)["params"]
+
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////mnt/c/Users/antho/Documents/blog/blog.db'
-
+app.config['SQLALCHEMY_DATABASE_URI'] = params["local_url"]
 db = SQLAlchemy(app)
 
 class Blogpost(db.Model):
@@ -20,21 +23,21 @@ class Blogpost(db.Model):
 def index():
     posts = Blogpost.query.order_by(Blogpost.date_posted.desc()).all()
 
-    return render_template('index.html', posts=posts)
+    return render_template('index.html', posts=posts,params=params)
 
 @app.route('/about')
 def about():
-    return render_template('about.html')
+    return render_template('about.html',params=params)
 
 @app.route('/post/<int:post_id>')
 def post(post_id):
     post = Blogpost.query.filter_by(id=post_id).one()
 
-    return render_template('post.html', post=post)
+    return render_template('post.html', post=post,params=params)
 
 @app.route('/add')
 def add():
-    return render_template('add.html')
+    return render_template('add.html',params=params)
 
 @app.route('/addpost', methods=['POST'])
 def addpost():
@@ -47,7 +50,6 @@ def addpost():
 
     db.session.add(post)
     db.session.commit()
-
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
